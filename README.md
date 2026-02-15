@@ -1,10 +1,10 @@
 # Desafio Técnico - QA & Automação de Testes
 
-Este repositório consolida a solução completa da prova, cobrindo:
+Este repositório reúne uma solução completa de automação, com:
 
-- **Questão 1:** testes E2E na Amazon Brasil (Playwright e Cypress)
-- **Questão 2:** testes de API com Python + Requests + Pytest
-- **Questão 3:** integração CI/CD com GitHub Actions
+- testes E2E na Amazon Brasil com Playwright e Cypress
+- testes de API com Python + Requests + Pytest
+- execução automatizada em pipeline CI/CD com GitHub Actions
 
 ## Estrutura do repositório
 
@@ -27,7 +27,7 @@ desafio_tecnico/
 
 ## Como rodar os testes localmente
 
-### 1) Playwright (Questão 1)
+### 1) Playwright (E2E)
 
 Pasta: `amazon-qa-test`
 
@@ -42,7 +42,7 @@ Documentação detalhada: `amazon-qa-test/README.md`
 
 ---
 
-### 2) Cypress (Questão 1)
+### 2) Cypress (E2E)
 
 Pasta: `amazon-qa-test-cypress`
 
@@ -56,7 +56,7 @@ Documentação detalhada: `amazon-qa-test-cypress/README.md`
 
 ---
 
-### 3) API Tests (Questão 2)
+### 3) API Tests
 
 Pasta: `api-tests`
 
@@ -68,7 +68,7 @@ pytest -v
 
 Documentação detalhada: `api-tests/README.md`
 
-## CI/CD (Questão 3)
+## CI/CD
 
 O pipeline unificado está em:
 
@@ -79,7 +79,7 @@ O pipeline unificado está em:
 - Dispara automaticamente em `push` e `pull_request` para `main/master`
 - Permite execução manual via `workflow_dispatch`
 - Executa em paralelo:
-  - Playwright (matriz por browser)
+  - Playwright (matriz por browser; atualmente estável em `chromium`)
   - Cypress (matriz por browser)
   - API tests (matriz por versão de Python)
 - Publica artefatos de execução mesmo em caso de falha (`if: always()`)
@@ -100,4 +100,4 @@ O pipeline unificado está em:
 
 ## Observação
 
-Foram mantidas sugestões de melhoria nos READMEs de cada projeto, conforme solicitado no enunciado (item opcional).
+Os READMEs de cada projeto mantêm sugestões de melhoria no processo de automação para evolução futura.
