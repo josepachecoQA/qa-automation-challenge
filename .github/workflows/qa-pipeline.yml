@@ -1,0 +1,130 @@
+name: QA Pipeline
+
+on:
+  pull_request:
+    branches: [main, master]
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+concurrency:
+  group: qa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  playwright_e2e:
+    name: Playwright E2E (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: amazon-qa-test/package-lock.json
+
+      - name: Install dependencies
+        working-directory: amazon-qa-test
+        run: npm ci
+
+      - name: Install Playwright browsers
+        working-directory: amazon-qa-test
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        working-directory: amazon-qa-test
+        run: npx playwright test --project=${{ matrix.browser }}
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.browser }}
+          path: |
+            amazon-qa-test/playwright-report
+            amazon-qa-test/test-results
+          retention-days: 7
+
+  cypress_e2e:
+    name: Cypress E2E (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, firefox]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: amazon-qa-test-cypress/package-lock.json
+
+      - name: Install dependencies
+        working-directory: amazon-qa-test-cypress
+        run: npm ci
+
+      - name: Run Cypress tests
+        working-directory: amazon-qa-test-cypress
+        run: npx cypress run --browser ${{ matrix.browser }}
+
+      - name: Upload Cypress artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-artifacts-${{ matrix.browser }}
+          path: |
+            amazon-qa-test-cypress/cypress/screenshots
+            amazon-qa-test-cypress/cypress/videos
+            amazon-qa-test-cypress/cypress/reports
+          retention-days: 7
+
+  api_pytest:
+    name: API Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        working-directory: api-tests
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run API tests
+        working-directory: api-tests
+        run: pytest -v
+
+      - name: Upload API report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-report-py${{ matrix.python-version }}
+          path: api-tests/reports
+          retention-days: 7

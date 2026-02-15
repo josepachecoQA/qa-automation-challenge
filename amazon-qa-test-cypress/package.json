@@ -1,0 +1,23 @@
+{
+  "name": "amazon-qa-test-cypress",
+  "version": "1.0.0",
+  "description": "Projeto de automação E2E com Cypress para Amazon Brasil.",
+  "scripts": {
+    "test": "cypress run",
+    "test:headed": "cypress run --headed --browser chrome",
+    "test:open": "cypress open",
+    "test:spec": "cypress run --spec tests/amazon-add-to-cart.cy.js"
+  },
+  "keywords": [
+    "cypress",
+    "qa",
+    "e2e",
+    "amazon"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^14.3.0",
+    "cypress-mochawesome-reporter": "^3.8.2"
+  }
+}

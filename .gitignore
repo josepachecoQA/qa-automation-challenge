@@ -1,0 +1,22 @@
+# Node.js dependencies
+**/node_modules/
+
+# Playwright artifacts
+**/playwright-report/
+**/test-results/
+
+# Cypress artifacts
+amazon-qa-test-cypress/cypress/videos/
+amazon-qa-test-cypress/cypress/screenshots/
+amazon-qa-test-cypress/cypress/downloads/
+amazon-qa-test-cypress/cypress/reports/
+
+# Python caches and virtual environments
+**/__pycache__/
+**/.pytest_cache/
+**/.venv/
+*.pyc
+
+# OS/editor files
+.DS_Store
+Thumbs.db
